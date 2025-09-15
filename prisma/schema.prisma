@@ -32,12 +32,14 @@ enum PointsTransactionStatus {
 
 model User {
   id        String   @id @default(uuid())
-  name      String?
+  name      String
   email     String   @unique
+  password  String
   phone     String?
   role      Role     @default(customer)
-  branchId  String?
-  branch    Branch?  @relation(fields: [branchId], references: [id])
+  businessType String
+  branchId  String
+  branch    Branch  @relation(fields: [branchId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -49,7 +51,7 @@ model User {
 model Branch {
   id        String   @id @default(uuid())
   name      String
-  address   String?
+  address   String
   createdAt DateTime @default(now())
 
   users              User[]
@@ -62,9 +64,9 @@ model Purchase {
   userId     String
   branchId   String
   folio      String
-  description String?
+  description String
   amount     Decimal        @db.Decimal(12, 2)
-  receiptUrl String?
+  receiptUrl String
   status     PurchaseStatus @default(pending)
   createdAt  DateTime       @default(now())
 
@@ -78,7 +80,7 @@ model PointsTransaction {
   id         String                   @id @default(uuid())
   userId     String
   branchId   String
-  purchaseId String?
+  purchaseId String
   type       PointsTransactionType
   points     Int
   value      Decimal                  @db.Decimal(12, 2)
@@ -87,7 +89,7 @@ model PointsTransaction {
 
   user     User     @relation(fields: [userId], references: [id])
   branch   Branch   @relation(fields: [branchId], references: [id])
-  purchase Purchase? @relation(fields: [purchaseId], references: [id])
+  purchase Purchase @relation(fields: [purchaseId], references: [id])
 }
 
 model AdminLog {
