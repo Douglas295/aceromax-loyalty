@@ -16,7 +16,6 @@ interface UserMenuProps {
 }
 
 export default function UserMenu({ session, handleSignOut }: UserMenuProps) {
-  console.log("Session from hook:", session);
   return (
     <Menu as="div" className="relative inline-block text-left">
       {/* Trigger */}

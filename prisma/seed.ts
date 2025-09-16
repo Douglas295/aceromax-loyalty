@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role, Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -12,43 +12,44 @@ async function main() {
     data: {
       name: 'Main Branch',
       address: '123 Main St, Cityville',
+      price: new Prisma.Decimal(0.5), // ✅ Fix: must be Decimal
     },
   });
 
   // Create Superadmin
-  const superadmin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: 'Super Admin',
       email: 'superadmin@example.com',
       password: hashedPassword,
-      role: 'superadmin',
+      role: Role.superadmin, // ✅ use enum, not string
       branchId: branch.id,
-      businessType: "individual", 
+      businessType: "individual",
     },
   });
 
   // Create Admin
-  const admin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: 'Admin User',
       email: 'admin@example.com',
       password: hashedPassword,
-      role: 'admin',
+      role: Role.admin,
       branchId: branch.id,
-      businessType: "individual", 
+      businessType: "individual",
     },
   });
 
   // Create Clients
-  const clients = await Promise.all([
+  await Promise.all([
     prisma.user.create({
       data: {
         name: 'Client One',
         email: 'client1@example.com',
         password: hashedPassword,
-        role: 'customer',
+        role: Role.customer,
         branchId: branch.id,
-        businessType: "individual", 
+        businessType: "individual",
       },
     }),
     prisma.user.create({
@@ -56,9 +57,9 @@ async function main() {
         name: 'Client Two',
         email: 'client2@example.com',
         password: hashedPassword,
-        role: 'customer',
+        role: Role.customer,
         branchId: branch.id,
-        businessType: "individual", 
+        businessType: "individual",
       },
     }),
     prisma.user.create({
@@ -66,19 +67,19 @@ async function main() {
         name: 'Client Three',
         email: 'client3@example.com',
         password: hashedPassword,
-        role: 'customer',
+        role: Role.customer,
         branchId: branch.id,
-        businessType: "individual", 
+        businessType: "individual",
       },
     }),
   ]);
 
-  console.log('Seed complete.');
+  console.log('✅ Seed complete.');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('❌ Error during seeding:', e);
     process.exit(1);
   })
   .finally(async () => {
