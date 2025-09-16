@@ -87,7 +87,7 @@ export default function AdminDashboard() {
 
   const fetchPendingTransactions = async () => {
     try {
-      const response = await fetch("/api/admin/transactions/pending");
+      const response = await fetch("/api/admin/purchases/pending");
       if (response.ok) {
         const data = await response.json();
         setPendingTransactions(data);
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
     try {
       setProcessingTransaction(transactionId);
 
-      const response = await fetch("/api/admin/transactions/approve", {
+      const response = await fetch("/api/admin/purchases/approve", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
