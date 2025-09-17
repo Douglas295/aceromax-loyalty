@@ -88,7 +88,6 @@ export async function POST(req: Request) {
         status: PointsTransactionStatus.pending,
         description: description?.trim() || "Points redemption request",
         folio: `R-${Date.now()}-${randomUUID().slice(0, 6)}`, // ✅ generate folio
-        receiptUrl: null, // optional, can be updated later
       },
     });
 

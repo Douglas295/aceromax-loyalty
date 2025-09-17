@@ -51,6 +51,15 @@ export async function POST(req: Request) {
       },
     });
 
+    // Check if admin exists in the admin table
+    const adminExists = await prisma.user.findUnique({
+      where: { id: session.user.id, role: { in: ['admin', 'superadmin'] } },
+    });
+    
+    if (!adminExists) {
+      return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+    }
+    
     // Log admin action
     await prisma.adminLog.create({
       data: {
@@ -59,7 +68,6 @@ export async function POST(req: Request) {
         details: {
           transactionId: updatedTransaction.id,
           folio: updatedTransaction.folio,
-          receiptUrl: updatedTransaction.receiptUrl,
           userId: updatedTransaction.userId,
           type: updatedTransaction.type,
           amount: updatedTransaction.amount,

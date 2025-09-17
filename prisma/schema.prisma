@@ -58,7 +58,6 @@ model PointsTransaction {
   userId     String
   branchId   String
   folio      String
-  receiptUrl String?
   description String
   type       PointsTransactionType
   points     Int

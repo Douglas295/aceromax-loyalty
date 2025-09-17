@@ -22,9 +22,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { folio, amount, receiptUrl, description } = body;
+    const { folio, amount, description } = body;
 
-    if (!folio || !amount || !receiptUrl || !description) {
+    if (!folio || !amount || !description) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -52,7 +52,6 @@ export async function POST(req: Request) {
         userId: session.user.id,
         branchId: user.branchId,
         folio,
-        receiptUrl,
         description: cleanDescription,
         type: PointsTransactionType.earn,
         points,

@@ -32,9 +32,9 @@ interface PendingTransaction {
   id: string;
   folio: string;
   amount: number;
-  receiptUrl?: string;
   status: "pending" | "confirmed" | "redeemed" | "rejected";
   points: number;
+  type: "earn" | "redeem";
   createdAt: string;
   user: {
     id: string;
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="flex-shrink-0">
                           <Image
-                            src={`${transaction.receiptUrl??'/placeholder.png'}`}
+                            src={`${transaction.type === "earn"? '/images/purchase.png':'/images/redemption.png'}`}
                             alt="Receipt"
                             width={128}
                             height={128}

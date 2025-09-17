@@ -22,7 +22,6 @@ interface PointsHistory {
   status: "pending" | "confirmed" | "redeemed" | "rejected";
   description: string;
   folio?: string;
-  receiptUrl?: string;
   createdAt: string;
 }
 
@@ -38,7 +37,6 @@ export default function CustomerDashboard() {
   const [uploadForm, setUploadForm] = useState({
     folio: "",
     amount: "",
-    file: null as File | null,
     description: ""
   });
   const [redeemForm, setRedeemForm] = useState({
@@ -83,42 +81,17 @@ export default function CustomerDashboard() {
       setLoading(false);
     }
   };
-
-  const handleFileUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("/api/upload/receipt", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.url;
-      } else {
-        const error = await response.json();
-        throw new Error(error.error);
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-
+ 
   const handleSubmitReceipt = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!uploadForm.folio || !uploadForm.amount || !uploadForm.file) {
+    if (!uploadForm.folio || !uploadForm.amount) {
       toast.error("Please fill in all fields and select a file");
       return;
     }
 
     try {
       setLoading(true);
-      
-      // Upload file first
-      const receiptUrl = await handleFileUpload(uploadForm.file);
       
       // Submit purchase
       const response = await fetch("/api/points/purchases", {
@@ -129,7 +102,6 @@ export default function CustomerDashboard() {
         body: JSON.stringify({
           folio: uploadForm.folio,
           amount: uploadForm.amount,
-          receiptUrl: receiptUrl,
           description: uploadForm.description
         }),
       });
@@ -137,7 +109,7 @@ export default function CustomerDashboard() {
       if (response.ok) {
         const data = await response.json();
         toast.success(data.message);
-        setUploadForm({ folio: "", amount: "", file: null, description: "" });
+        setUploadForm({ folio: "", amount: "", description: "" });
         setShowUploadForm(false);
         fetchBalance();
         fetchHistory();
@@ -309,19 +281,7 @@ export default function CustomerDashboard() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
                     placeholder="Brief description of purchase"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Receipt Image
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setUploadForm({ ...uploadForm, file: e.target.files?.[0] || null })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
-                    required
-                  />
-                </div>
+                </div> 
                 <div className="flex gap-2">
                   <Button type="submit" className="flex-1 bg-sky-600 hover:bg-sky-700">
                     Submit Receipt

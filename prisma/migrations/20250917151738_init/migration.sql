@@ -40,7 +40,6 @@ CREATE TABLE "public"."PointsTransaction" (
     "userId" TEXT NOT NULL,
     "branchId" TEXT NOT NULL,
     "folio" TEXT NOT NULL,
-    "receiptUrl" TEXT,
     "description" TEXT NOT NULL,
     "type" "public"."PointsTransactionType" NOT NULL,
     "points" INTEGER NOT NULL,

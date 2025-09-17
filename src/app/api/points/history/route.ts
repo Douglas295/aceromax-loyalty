@@ -28,7 +28,6 @@ export async function GET() {
         description: true,
         createdAt: true,
         folio: true,
-        receiptUrl: true,
       },
     });
 
@@ -41,7 +40,6 @@ export async function GET() {
       description: tx.description,
       createdAt: tx.createdAt,
       folio: tx.folio || undefined,
-      receiptUrl: tx.receiptUrl || undefined,
     }));
 
     return NextResponse.json(formatted);

@@ -68,7 +68,7 @@ export default function LogIn()
         }
       });
       if(! loading){
-        router.push("/dashboard");
+        router.push("/");
       }
       setLoading(false);
     } else {

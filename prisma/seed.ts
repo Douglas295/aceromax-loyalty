@@ -77,7 +77,7 @@ async function main() {
         email: 'client2@example.com',
         password: hashedPassword,
         role: Role.customer,
-        branchId: branch.id,
+        branchId: branch2.id,
         businessType: "individual",
       },
     }),
