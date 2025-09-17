@@ -20,49 +20,49 @@ type Benefit = {
 
 const benefitsData: Benefit[] = [
   {
-    title: "For Customers",
+    title: "Para Clientes",
     icon: Users,
     items: [
       {
-        heading: "Save Money",
+        heading: "Ahorra Dinero",
         description:
-          "Redeem points for discounts on future purchases, turning loyalty into real savings.",
+          "Canjea puntos por descuentos en futuras compras, convirtiendo tu lealtad en ahorros reales.",
         icon: Wallet
       },
       {
-        heading: "Track Your Points",
+        heading: "Consulta Tus Puntos",
         description:
-          "Easily monitor your balance and transaction history through your personal portal.",
+          "Monitorea fácilmente tu saldo y el historial de transacciones desde tu portal personal.",
         icon: History
       },
       {
-        heading: "Simple Redemption",
+        heading: "Canje Sencillo",
         description:
-          "Use your points directly in-store with a quick and easy redemption process.",
+          "Usa tus puntos directamente en tienda con un proceso de canje rápido y fácil.",
         icon: Gift
       }
     ]
   },
   {
-    title: "For Aceromax",
+    title: "Para Aceromax",
     icon: BarChart3,
     items: [
       {
-        heading: "Boost Loyalty",
+        heading: "Fideliza Clientes",
         description:
-          "Encourage repeat purchases and strengthen long-term customer relationships.",
+          "Incentiva compras recurrentes y fortalece relaciones a largo plazo con los clientes.",
         icon: Users
       },
       {
-        heading: "Customer Insights",
+        heading: "Información del Cliente",
         description:
-          "Gather valuable data on purchasing behavior to inform targeted campaigns.",
+          "Obtén datos valiosos sobre el comportamiento de compra para campañas más efectivas.",
         icon: LineChart
       },
       {
-        heading: "Competitive Edge",
+        heading: "Ventaja Competitiva",
         description:
-          "Differentiate Aceromax from local competitors by offering added value.",
+          "Diferencia a Aceromax de los competidores locales ofreciendo un valor agregado.",
         icon: Gift
       }
     ]

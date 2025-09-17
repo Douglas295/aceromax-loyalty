@@ -95,10 +95,40 @@ export async function GET() {
       }),
     ]);
 
+    
     const totalPointsEarnedValue = totalPointsEarned._sum.points || 0;
     const totalPointsRedeemedValue = totalPointsRedeemed._sum.points || 0;
-    const currentLiabilities = (totalPointsEarnedValue - totalPointsRedeemedValue) * 0.5;
+    // const currentLiabilities = (totalPointsEarnedValue - totalPointsRedeemedValue) * 0.5;
     const totalRedemptions = Number(totalRedemptionsAmount._sum.amount || 0);
+
+    // Fetch the user's branchId
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+      select: {
+        branchId: true, // Fetch the branchId for the user
+      },
+    });
+
+    // Fetch branch prices
+    const branchPrices = await prisma.branch.findMany({
+      select: {
+        id: true,
+        price: true,
+      },
+    });
+
+    // Now, use the branch price for calculating current liabilities
+    let currentLiabilities = 0;
+    if (user && branchPrices.length > 0) {
+      // Find the branch using the user's branchId
+      const userBranch = branchPrices.find(branch => branch.id === user.branchId);
+      if (userBranch) {
+        currentLiabilities = (totalPointsEarnedValue - totalPointsRedeemedValue) * Number(userBranch.price);
+      }
+    }
+
 
     return NextResponse.json({
       totalUsers,

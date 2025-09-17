@@ -3,29 +3,29 @@ import { UserPlus, Upload, Gift, Check } from "lucide-react";
 
 const howItWorks = [
   {
-    step: "1. Register",
+    step: "1. Regístrate",
     details: [
-      "Sign up with your name, email, and phone number",
-      "Link your account to your preferred Aceromax branch",
-      "Get access to your personal points dashboard"
+      "Regístrate con tu nombre, correo electrónico y número de teléfono",
+      "Vincula tu cuenta con tu sucursal Aceromax preferida",
+      "Accede a tu panel personal de puntos"
     ],
     icon: UserPlus
   },
   {
-    step: "2. Shop & Upload",
+    step: "2. Compra y Sube",
     details: [
-      "Make a purchase at Aceromax and keep your receipt or invoice folio",
-      "Upload the folio and amount (with optional photo) in the portal",
-      "Admin reviews and approves the purchase to assign points"
+      "Realiza una compra en Aceromax y guarda tu recibo o folio de factura",
+      "Sube el folio y el monto (con foto opcional) en el portal",
+      "El administrador revisa y aprueba la compra para asignar los puntos"
     ],
     icon: Upload
   },
   {
-    step: "3. Earn & Redeem",
+    step: "3. Gana y Canjea",
     details: [
-      "For every MXN $100 spent, earn 1 point (rounded down)",
-      "Each point is worth MXN $0.50 in store credits",
-      "Redeem points at checkout by generating a unique code"
+      "Por cada $100 MXN gastados, ganas 1 punto (redondeado hacia abajo)",
+      "Cada punto tiene un valor diferente dependiendo de la sucursal",
+      "El canje de puntos debe ser realizado por el administrador"
     ],
     icon: Gift
   }

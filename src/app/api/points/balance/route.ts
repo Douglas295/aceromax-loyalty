@@ -19,7 +19,8 @@ export async function GET() {
           where: {
             status: PointsTransactionStatus.confirmed
           }
-        }
+        },
+        branch: true // Include the branch data (to get the price)
       }
     });
 
@@ -55,13 +56,15 @@ export async function GET() {
       .filter(p => p.type === PointsTransactionType.redeem)
       .reduce((sum, p) => sum + p.points, 0);
 
+    const branchPrice = user.branch?.price || 0.5; 
+
     const currentBalance = earnedPoints - redeemedPoints - pendingPoints;
     
     return NextResponse.json({
       balance: currentBalance,
       earnedPoints,
       redeemedPoints,
-      pointsValue: currentBalance * 0.5
+      pointsValue: currentBalance * Number(branchPrice)
     });
   } catch (error) {
     console.error("Balance calculation error:", error);

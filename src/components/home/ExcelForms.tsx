@@ -9,7 +9,7 @@ export default function JoinNowCTA() {
     <section className="bg-[#0284c7] py-12 px-4 text-white text-center">
       <h2 className="text-3xl font-bold">Join Aceromax Points+</h2>
       <p className="mt-3 text-lg text-sky-100">
-        Earn rewards every time you buy construction materials. Simple, fast, and rewarding!
+        Gana recompensas cada vez que compres materiales de construcción. ¡Sencillo, rápido y gratificante!
       </p>
 
       <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">
