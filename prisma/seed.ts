@@ -5,33 +5,41 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Hashing password
-  const hashedPassword = await bcrypt.hash('Password123!', 10);
+  const hashedPassword = await bcrypt.hash('password123', 10);
 
   // Create Branch
   const branch = await prisma.branch.create({
     data: {
-      name: 'Main Branch',
+      name: 'MainBranch',
       address: '123 Main St, Cityville',
-      price: new Prisma.Decimal(0.5), // ✅ Fix: must be Decimal
+      price: new Prisma.Decimal(0.5),  
+    },
+  });
+
+  const branch2 = await prisma.branch.create({
+    data: {
+      name: 'Branch2',
+      address: 'Branch 2 village',
+      price: new Prisma.Decimal(0.6),  
     },
   });
 
   // Create Superadmin
   await prisma.user.create({
     data: {
-      name: 'Super Admin',
+      name: 'SuperAdmin',
       email: 'superadmin@example.com',
       password: hashedPassword,
-      role: Role.superadmin, // ✅ use enum, not string
+      role: Role.superadmin,  
       branchId: branch.id,
-      businessType: "individual",
+      businessType: "business",
     },
   });
 
   // Create Admin
   await prisma.user.create({
     data: {
-      name: 'Admin User',
+      name: 'Admin',
       email: 'admin@example.com',
       password: hashedPassword,
       role: Role.admin,
@@ -40,12 +48,23 @@ async function main() {
     },
   });
 
+  await prisma.user.create({
+    data: {
+      name: 'Admin2',
+      email: 'admin2@example.com',
+      password: hashedPassword,
+      role: Role.admin,
+      branchId: branch2.id,
+      businessType: "individual",
+    },
+  });
+
   // Create Clients
   await Promise.all([
     prisma.user.create({
       data: {
-        name: 'Client One',
-        email: 'client1@example.com',
+        name: 'Client',
+        email: 'client@example.com',
         password: hashedPassword,
         role: Role.customer,
         branchId: branch.id,
@@ -54,7 +73,7 @@ async function main() {
     }),
     prisma.user.create({
       data: {
-        name: 'Client Two',
+        name: 'Client2',
         email: 'client2@example.com',
         password: hashedPassword,
         role: Role.customer,
@@ -64,11 +83,11 @@ async function main() {
     }),
     prisma.user.create({
       data: {
-        name: 'Client Three',
+        name: 'Client3',
         email: 'client3@example.com',
         password: hashedPassword,
         role: Role.customer,
-        branchId: branch.id,
+        branchId: branch2.id,
         businessType: "individual",
       },
     }),
