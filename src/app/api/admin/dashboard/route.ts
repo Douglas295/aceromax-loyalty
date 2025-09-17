@@ -103,12 +103,8 @@ export async function GET() {
 
     // Fetch the user's branchId
     const user = await prisma.user.findUnique({
-      where: {
-        id: session.user.id,
-      },
-      select: {
-        branchId: true, // Fetch the branchId for the user
-      },
+      where: { id: session.user.id, },
+      select: { branchId: true, },
     });
 
     // Fetch branch prices
@@ -119,16 +115,15 @@ export async function GET() {
       },
     });
 
-    // Now, use the branch price for calculating current liabilities
-    let currentLiabilities = 0;
+    let price = 0.5;
     if (user && branchPrices.length > 0) {
-      // Find the branch using the user's branchId
       const userBranch = branchPrices.find(branch => branch.id === user.branchId);
       if (userBranch) {
-        currentLiabilities = (totalPointsEarnedValue - totalPointsRedeemedValue) * Number(userBranch.price);
+         price = Number(userBranch.price);
       }
     }
 
+    const currentLiabilities = (totalPointsEarnedValue - totalPointsRedeemedValue) * price || 0
 
     return NextResponse.json({
       totalUsers,
