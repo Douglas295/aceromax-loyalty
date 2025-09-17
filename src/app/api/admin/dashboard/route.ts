@@ -27,13 +27,21 @@ export async function GET() {
       totalRedemptionsAmount
     ] = await Promise.all([
       // Total users
-      prisma.user.count(),
+      prisma.user.count({
+        where: {
+          role: 'customer',
+        },
+      }),
 
       // Users created in last 30 days
       prisma.user.count({
         where: {
-          createdAt: {
-            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+          pointsTransactions: {
+            some: {
+              createdAt: {
+                gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // last 30 days
+              },
+            },
           },
         },
       }),
@@ -49,7 +57,6 @@ export async function GET() {
       // Pending "earn" transactions (awaiting admin review)
       prisma.pointsTransaction.count({
         where: {
-          type: PointsTransactionType.earn,
           status: PointsTransactionStatus.pending,
         },
       }),

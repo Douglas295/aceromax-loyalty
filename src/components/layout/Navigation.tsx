@@ -8,7 +8,6 @@ import Image from "next/image";
 import { 
   Home, 
   Shield,
-  Gift,
   BarChart3,
   LogIn
 } from "lucide-react";
@@ -185,17 +184,7 @@ export default function Navigation() {
 
           {/* Navigation Links */}
           <div className="flex items-center">
-            <Link
-              href="/dashboard"
-              className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
-            >
-              <Home className="w-4 h-4 sm:mr-2" />
-              <div className="hidden sm:block">
-              Dashboard
-              </div>
-            </Link>
-
-            {isAdmin && (
+            {isAdmin ? 
               <>
                 <Link
                   href="/admin"
@@ -207,47 +196,28 @@ export default function Navigation() {
                   </div>
                 </Link>
                 <Link
-                  href="/admin/redemption"
+                  href="/graph"
                   className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
                 >
-                  <Gift className="w-4 h-4 sm:mr-2" />
+                  <BarChart3 className="w-4 h-4 sm:mr-2" />
                   <div className="hidden sm:block">
-                  Validate Codes
+                  Reports
                   </div>
                 </Link>
               </>
-            )}
-
-            <Link
-              href="/graph"
-              className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
-            >
-              <BarChart3 className="w-4 h-4 sm:mr-2" />
-              <div className="hidden sm:block">
-              Reports
-              </div>
-            </Link>
+              :
+              <Link
+                href="/dashboard"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+              >
+                <Home className="w-4 h-4 sm:mr-2" />
+                <div className="hidden sm:block">
+                Dashboard
+                </div>
+              </Link>
+            }
           </div>
 
-          {/* User Menu */}
-          {/* <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <User className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-700">{session.user.name}</span>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">
-                {session.user.role}
-              </span>
-            </div>
-            <Button
-              onClick={handleSignOut}
-              variant="outline"
-              size="sm"
-              className="flex items-center"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </div> */}
           <UserMenu session={session} handleSignOut={handleSignOut} />
         </div>
       </div>

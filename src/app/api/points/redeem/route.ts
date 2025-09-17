@@ -42,7 +42,26 @@ export async function POST(req: Request) {
       .filter((p) => p.type === PointsTransactionType.redeem)
       .reduce((sum, p) => sum + p.points, 0);
 
-    const currentBalance = earnedPoints - redeemedPoints;
+    const user_pending = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: {
+        pointsTransactions: {
+          where: {
+            status: PointsTransactionStatus.pending
+          }
+        }
+      }
+    });
+
+    if (!user_pending) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const pendingPoints = user_pending.pointsTransactions
+      .filter(p => p.type === PointsTransactionType.redeem)
+      .reduce((sum, p) => sum + p.points, 0);
+
+    const currentBalance = earnedPoints - redeemedPoints - pendingPoints;
 
     if (parsedPoints > currentBalance) {
       return NextResponse.json({ error: "Insufficient points balance" }, { status: 400 });
@@ -78,7 +97,7 @@ export async function POST(req: Request) {
       folio: transaction.folio,
       points: transaction.points,
       amount: transaction.amount,
-      message: "Redemption generated successfully",
+      message: "Redemption generated successfully! Wait for approving",
     });
   } catch (error) {
     console.error("Redemption error:", error);

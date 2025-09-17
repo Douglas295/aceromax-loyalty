@@ -75,7 +75,7 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("/api/admin/dashboard/stats");
+      const response = await fetch("/api/admin/dashboard");
       if (response.ok) {
         const data = await response.json();
         setStats(data);
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
 
   const fetchPendingTransactions = async () => {
     try {
-      const response = await fetch("/api/admin/purchases/pending");
+      const response = await fetch("/api/admin/points/pending");
       if (response.ok) {
         const data = await response.json();
         setPendingTransactions(data);
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
     try {
       setProcessingTransaction(transactionId);
 
-      const response = await fetch("/api/admin/purchases/approve", {
+      const response = await fetch("/api/admin/points/approve", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
                 <Receipt className="w-8 h-8 text-indigo-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Total Redemptions</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalRedemptions}</p>
+                  <p className="text-2xl font-bold text-gray-900">${stats.totalRedemptions}</p>
                 </div>
               </div>
             </div>
@@ -260,7 +260,7 @@ export default function AdminDashboard() {
                   key={transaction.id}
                   className="border border-gray-200 rounded-lg p-4"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex-col sm:flex-row flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-4">
                         <div>
@@ -291,7 +291,7 @@ export default function AdminDashboard() {
                         </div>
                         <div className="flex-shrink-0">
                           <Image
-                            src={transaction.receiptUrl ?? "/placeholder.png"}
+                            src={`${transaction.receiptUrl??'/placeholder.png'}`}
                             alt="Receipt"
                             width={128}
                             height={128}

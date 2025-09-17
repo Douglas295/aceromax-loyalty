@@ -59,6 +59,7 @@ export async function POST(req: Request) {
         details: {
           transactionId: updatedTransaction.id,
           folio: updatedTransaction.folio,
+          receiptUrl: updatedTransaction.receiptUrl,
           userId: updatedTransaction.userId,
           type: updatedTransaction.type,
           amount: updatedTransaction.amount,

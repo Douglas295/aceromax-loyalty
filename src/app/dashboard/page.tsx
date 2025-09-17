@@ -56,7 +56,7 @@ export default function CustomerDashboard() {
       fetchBalance();
       fetchHistory();
     }
-  }, [status, router]);
+  }, [status, router, session]);
 
   const fetchBalance = async () => {
     try {
@@ -139,6 +139,7 @@ export default function CustomerDashboard() {
         toast.success(data.message);
         setUploadForm({ folio: "", amount: "", file: null, description: "" });
         setShowUploadForm(false);
+        fetchBalance();
         fetchHistory();
       } else {
         const error = await response.json();
@@ -188,8 +189,9 @@ export default function CustomerDashboard() {
       if (response.ok) {
         const data = await response.json();
         toast.success(data.message);
-        setUploadForm({ folio: "", amount: "", file: null, description: "" });
-        setShowUploadForm(false);
+        setRedeemForm({ points: "", description: "" });
+        setShowRedeemForm(false);
+        fetchBalance();
         fetchHistory();
       } else {
         const error = await response.json();
@@ -419,6 +421,7 @@ export default function CustomerDashboard() {
                     <p className="text-sm text-gray-600">
                       {new Date(item.createdAt).toLocaleDateString()}
                     </p>
+                    
                     <span className={`inline-block px-2 py-1 text-xs rounded-full ${
                       item.status === "confirmed" ? "bg-green-100 text-green-800" :
                       item.status === "pending" ? "bg-yellow-100 text-yellow-800" :

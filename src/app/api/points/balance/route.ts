@@ -35,8 +35,28 @@ export async function GET() {
       .filter(p => p.type === PointsTransactionType.redeem)
       .reduce((sum, p) => sum + p.points, 0);
 
-    const currentBalance = earnedPoints - redeemedPoints;
 
+    const user_pending = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: {
+        pointsTransactions: {
+          where: {
+            status: PointsTransactionStatus.pending
+          }
+        }
+      }
+    });
+
+    if (!user_pending) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const pendingPoints = user_pending.pointsTransactions
+      .filter(p => p.type === PointsTransactionType.redeem)
+      .reduce((sum, p) => sum + p.points, 0);
+
+    const currentBalance = earnedPoints - redeemedPoints - pendingPoints;
+    
     return NextResponse.json({
       balance: currentBalance,
       earnedPoints,

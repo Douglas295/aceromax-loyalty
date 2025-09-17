@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { PointsTransactionStatus, PointsTransactionType } from "@prisma/client";
+import { PointsTransactionStatus } from "@prisma/client";
 
 export async function GET() {
   try {
@@ -16,10 +16,9 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Fetch pending "earn" transactions (i.e., purchases needing review)
+    // Fetch pending transactions (i.e., purchases needing review)
     const pendingPurchases = await prisma.pointsTransaction.findMany({
       where: {
-        type: PointsTransactionType.earn,
         status: PointsTransactionStatus.pending,
       },
       include: {
