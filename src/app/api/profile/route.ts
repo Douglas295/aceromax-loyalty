@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
 
 export async function GET() {
   try {
@@ -39,11 +40,28 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const body = await req.json();
-    const { name, phone, businessType } = body as {
+    const { name, phone, businessType, currentPassword, newPassword } = body as {
       name?: string;
       phone?: string | null;
       businessType?: string;
+      currentPassword?: string;
+      newPassword?: string;
     };
+
+    // Optional password change
+    if ((currentPassword && !newPassword) || (!currentPassword && newPassword)) {
+      return NextResponse.json({ error: "Provide both current and new password" }, { status: 400 });
+    }
+
+    if (currentPassword && newPassword) {
+      const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { password: true } });
+      if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 });
+      const ok = await bcrypt.compare(currentPassword, user.password);
+      if (!ok) return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
+      if (newPassword.length < 8) return NextResponse.json({ error: "New password must be at least 8 characters" }, { status: 400 });
+      const hashed = await bcrypt.hash(newPassword, 10);
+      await prisma.user.update({ where: { id: session.user.id }, data: { password: hashed } });
+    }
 
     const updated = await prisma.user.update({
       where: { id: session.user.id },

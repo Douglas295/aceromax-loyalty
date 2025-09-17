@@ -12,6 +12,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [pwdSaving, setPwdSaving] = useState(false);
   const isAuthed = useMemo(() => status === "authenticated" && !!session?.user, [status, session]);
 
   useEffect(() => {
@@ -65,6 +66,41 @@ export default function ProfilePage() {
     }
   }
 
+  async function changePassword(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    try {
+      setPwdSaving(true);
+      const form = e.currentTarget;
+      const currentPassword = (form.elements.namedItem("currentPassword") as HTMLInputElement)?.value;
+      const newPassword = (form.elements.namedItem("newPassword") as HTMLInputElement)?.value;
+      const confirmPassword = (form.elements.namedItem("confirmPassword") as HTMLInputElement)?.value;
+
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        toast.error("Fill all password fields");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        toast.error("New passwords do not match");
+        return;
+      }
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to update password");
+      }
+      (form as HTMLFormElement).reset();
+      toast.success("Password updated");
+    } catch (e: any) {
+      toast.error(e.message || "Error updating password");
+    } finally {
+      setPwdSaving(false);
+    }
+  }
+
   if (!isAuthed || loading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
@@ -105,6 +141,27 @@ export default function ProfilePage() {
             </div>
             <div className="pt-2">
               <Button type="submit" disabled={saving}>{saving ? "Saving..." : "Save Changes"}</Button>
+            </div>
+          </form>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6 mt-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Change Password</h2>
+          <form onSubmit={changePassword} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+              <input name="currentPassword" type="password" className="w-full h-11 border rounded px-3" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+              <input name="newPassword" type="password" className="w-full h-11 border rounded px-3" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
+              <input name="confirmPassword" type="password" className="w-full h-11 border rounded px-3" />
+            </div>
+            <div className="pt-2">
+              <Button type="submit" disabled={pwdSaving}>{pwdSaving ? "Updating..." : "Update Password"}</Button>
             </div>
           </form>
         </div>
