@@ -263,6 +263,17 @@ export default function AdminDashboard() {
                   <div className="flex-col sm:flex-row flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0">
+                          <Image
+                            src={`${transaction.receiptUrl??'/placeholder.png'}`}
+                            alt="Receipt"
+                            width={128}
+                            height={128}
+                            className="object-cover rounded border"
+                            style={{ width: "8rem", height: "8rem" }}
+                            unoptimized
+                          />
+                        </div>
                         <div>
                           <h3 className="font-medium text-gray-900">
                             Folio: {transaction.folio}
@@ -289,17 +300,7 @@ export default function AdminDashboard() {
                             {new Date(transaction.createdAt).toLocaleDateString()}
                           </p>
                         </div>
-                        <div className="flex-shrink-0">
-                          <Image
-                            src={`${transaction.receiptUrl??'/placeholder.png'}`}
-                            alt="Receipt"
-                            width={128}
-                            height={128}
-                            className="object-cover rounded border"
-                            style={{ width: "8rem", height: "8rem" }}
-                            unoptimized
-                          />
-                        </div>
+                        
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">

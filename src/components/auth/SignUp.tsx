@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
@@ -22,6 +22,7 @@ export default function SignUp() {
     name: "",
     phone: "",
     businessType: "individual",
+    branchId: "",
     agreeToTerms: false
   });
 
@@ -31,8 +32,18 @@ export default function SignUp() {
     password: "",
     confirmPassword: "",
     name: "",
-    type: ""
+    type: "",
+    branchId: ""
   });
+
+  const [branches, setBranches] = useState<Array<{ id: string; name: string }>>([]);
+
+  useEffect(() => {
+    fetch("/api/branches")
+      .then((r) => r.json())
+      .then((data) => setBranches(data ?? []))
+      .catch(() => setBranches([]));
+  }, []);
 
   // Handle input changes
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -57,7 +68,8 @@ export default function SignUp() {
       password: "",
       confirmPassword: "",
       name: "",
-      type: ""
+      type: "",
+      branchId: ""
     };
 
     // Check name
@@ -80,6 +92,10 @@ export default function SignUp() {
     }
 
     // Check confirm password
+    // Branch selection
+    if (!formData.branchId) {
+      newErrors.branchId = "Please select a branch";
+    }
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
@@ -106,7 +122,8 @@ export default function SignUp() {
           password: formData.password,
           name: formData.name,
           phone: formData.phone,
-          businessType: formData.businessType
+          businessType: formData.businessType,
+          branchId: formData.branchId
         }),
       }).then(async (res) => {
         if (res.status === 200) {
@@ -134,6 +151,7 @@ export default function SignUp() {
     formData.password && 
     formData.confirmPassword && 
     formData.password === formData.confirmPassword && 
+    formData.branchId &&
     formData.agreeToTerms;
 
   return (
@@ -145,6 +163,26 @@ export default function SignUp() {
         Join the Aceromax community and start connecting with the aceromax industry
       </span>
       <form onSubmit={handleSubmit} className="w-full bg-white rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col gap-4">
+        {/* Branch */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="branch">
+            Select Branch
+          </label>
+          <select
+            id="branch"
+            value={formData.branchId}
+            onChange={(e) => handleInputChange("branchId", e.target.value)}
+            className="w-full h-12 px-4 rounded-md border border-gray-300 bg-white text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            <option value="">Choose a branch</option>
+            {branches.map((b) => (
+              <option key={b.id} value={b.id}>{b.name}</option>
+            ))}
+          </select>
+          {errors.branchId && (
+            <p className="text-red-500 text-sm mt-1">{errors.branchId}</p>
+          )}
+        </div>
         {/* Name */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="name">

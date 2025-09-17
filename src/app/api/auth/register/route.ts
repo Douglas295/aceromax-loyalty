@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, password, name, phone, businessType } = body;
+    const { email, password, name, phone, businessType, branchId } = body;
 
     if (!email || !password || !name) {
       return NextResponse.json(
@@ -29,14 +29,26 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Get default branch (change this logic as needed)
-    const defaultBranch = await prisma.branch.findFirst();
-
-    if (!defaultBranch) {
-      return NextResponse.json(
-        { error: "No branch found. Please contact support." },
-        { status: 500 }
-      );
+    // Validate requested branch or fallback to first
+    let targetBranchId: string | null = null;
+    if (branchId) {
+      const branch = await prisma.branch.findUnique({ where: { id: branchId } });
+      if (!branch) {
+        return NextResponse.json(
+          { error: "Selected branch not found." },
+          { status: 400 }
+        );
+      }
+      targetBranchId = branch.id;
+    } else {
+      const fallback = await prisma.branch.findFirst();
+      if (!fallback) {
+        return NextResponse.json(
+          { error: "No branch found. Please contact support." },
+          { status: 500 }
+        );
+      }
+      targetBranchId = fallback.id;
     }
 
     // Create user
@@ -47,7 +59,7 @@ export async function POST(req: Request) {
         name,
         phone,
         businessType,
-        branchId: defaultBranch.id,
+        branchId: targetBranchId,
         role: "customer", // optional, as it's default in schema
       },
     });

@@ -2,6 +2,7 @@ import React from "react";
 import { Menu } from "@headlessui/react";
 import { User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface SessionUser {
   id: string;
@@ -26,13 +27,16 @@ export default function UserMenu({ session, handleSignOut }: UserMenuProps) {
 
       {/* Dropdown Items */}
       <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-        <div className="pl-4 py-2">
-          Profile &nbsp;
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">
-            {session.user.role}
-          </span>
-        </div>
-
+        <Menu.Item>
+          <Link href="/profile">
+          <div className="pl-4 py-2">
+            Profile &nbsp;
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">
+              {session.user.role}
+            </span>
+          </div>
+          </Link>
+          </Menu.Item>
         <Menu.Item>
           {({ active }) => (
             <Button

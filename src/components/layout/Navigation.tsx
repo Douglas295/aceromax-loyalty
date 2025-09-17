@@ -152,8 +152,6 @@ export default function Navigation() {
     )
   }
 
-  const isAdmin = session.user.role === "admin" || session.user.role === "superadmin";
-
   return (
     <nav className="bg-white shadow-sm border-b fixed shadow-md z-100 px-4 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,8 +182,7 @@ export default function Navigation() {
 
           {/* Navigation Links */}
           <div className="flex items-center">
-            {isAdmin ? 
-              <>
+            {session.user.role === "admin" && 
                 <Link
                   href="/admin"
                   className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
@@ -195,28 +192,30 @@ export default function Navigation() {
                   Admin Panel
                   </div>
                 </Link>
-                {session.user.role === "superadmin" && (
-                  <Link
-                    href="/admin/branches"
-                    className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
-                  >
-                    <Shield className="w-4 h-4 sm:mr-2" />
-                    <div className="hidden sm:block">
-                    Branches
-                    </div>
-                  </Link>
-                )}
-                <Link
-                  href="/graph"
-                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
-                >
-                  <BarChart3 className="w-4 h-4 sm:mr-2" />
-                  <div className="hidden sm:block">
-                  Reports
-                  </div>
-                </Link>
-              </>
-              :
+            }
+            {session.user.role === "superadmin" && 
+              <>
+              <Link
+                href="/admin/branches"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+              >
+                <Shield className="w-4 h-4 sm:mr-2" />
+                <div className="hidden sm:block">
+                Branches
+                </div>
+              </Link>
+              <Link
+                href="/graph"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+              >
+                <BarChart3 className="w-4 h-4 sm:mr-2" />
+                <div className="hidden sm:block">
+                Reports
+                </div>
+              </Link>
+            </>
+            }
+            {session.user.role === "customer" && 
               <Link
                 href="/dashboard"
                 className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
@@ -228,7 +227,6 @@ export default function Navigation() {
               </Link>
             }
           </div>
-
           <UserMenu session={session} handleSignOut={handleSignOut} />
         </div>
       </div>
