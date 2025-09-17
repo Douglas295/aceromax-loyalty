@@ -195,6 +195,17 @@ export default function Navigation() {
                   Admin Panel
                   </div>
                 </Link>
+                {session.user.role === "superadmin" && (
+                  <Link
+                    href="/admin/branches"
+                    className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+                  >
+                    <Shield className="w-4 h-4 sm:mr-2" />
+                    <div className="hidden sm:block">
+                    Branches
+                    </div>
+                  </Link>
+                )}
                 <Link
                   href="/graph"
                   className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
