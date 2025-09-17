@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -6,12 +7,24 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 
+interface Profile {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  businessType: "individual" | "business" | string;
+  branch?: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [pwdSaving, setPwdSaving] = useState(false);
   const isAuthed = useMemo(() => status === "authenticated" && !!session?.user, [status, session]);
 
@@ -23,7 +36,7 @@ export default function ProfilePage() {
     if (status === "authenticated") {
       fetchProfile();
     }
-  }, [status]);
+  }, [status, router]);
 
   async function fetchProfile() {
     try {
@@ -32,8 +45,12 @@ export default function ProfilePage() {
       if (!res.ok) throw new Error("Failed to load profile");
       const data = await res.json();
       setProfile(data);
-    } catch (e) {
-      toast.error("Failed to load profile");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to load profile");
+      }
     } finally {
       setLoading(false);
     }
@@ -59,8 +76,12 @@ export default function ProfilePage() {
       }
       toast.success("Profile updated");
       await fetchProfile();
-    } catch (e: any) {
-      toast.error(e.message || "Error saving profile");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error saving profile");
+      }
     } finally {
       setSaving(false);
     }
@@ -92,10 +113,14 @@ export default function ProfilePage() {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || "Failed to update password");
       }
-      (form as HTMLFormElement).reset();
+      form.reset();
       toast.success("Password updated");
-    } catch (e: any) {
-      toast.error(e.message || "Error updating password");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error updating password");
+      }
     } finally {
       setPwdSaving(false);
     }

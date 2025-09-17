@@ -37,7 +37,7 @@ export default function BranchesPage() {
     if (status === "authenticated") {
       fetchBranches();
     }
-  }, [status, isSuperadmin]);
+  }, [status, isSuperadmin, router]);
 
   async function fetchBranches() {
     try {
@@ -46,8 +46,12 @@ export default function BranchesPage() {
       if (!res.ok) throw new Error("Failed to fetch branches");
       const data = await res.json();
       setBranches(data);
-    } catch (e) {
-      toast.error("Failed to load branches");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to load branches");
+      }
     } finally {
       setLoading(false);
     }
@@ -72,8 +76,12 @@ export default function BranchesPage() {
       toast.success("Branch created");
       (document.getElementById("create-form") as HTMLFormElement)?.reset();
       await fetchBranches();
-    } catch (e: any) {
-      toast.error(e.message || "Error creating branch");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error creating branch");
+      }
     } finally {
       setCreating(false);
     }
@@ -93,8 +101,12 @@ export default function BranchesPage() {
       }
       toast.success("Branch updated");
       await fetchBranches();
-    } catch (e: any) {
-      toast.error(e.message || "Error updating branch");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error updating branch");
+      }
     } finally {
       setUpdatingId(null);
     }
@@ -112,8 +124,12 @@ export default function BranchesPage() {
       }
       toast.success("Branch deleted");
       await fetchBranches();
-    } catch (e: any) {
-      toast.error(e.message || "Error deleting branch");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error deleting branch");
+      }
     } finally {
       setDeletingId(null);
     }

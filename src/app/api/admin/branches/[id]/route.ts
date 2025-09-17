@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 
 async function requireSuperadmin() {
   const session = await getServerSession(authOptions);
@@ -14,12 +15,12 @@ async function requireSuperadmin() {
   return { session } as const;
 }
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireSuperadmin();
     if ("error" in auth) return auth.error;
 
-    const { id } = params;
+    const { id } = await context.params;
     const branch = await prisma.branch.findUnique({ where: { id } });
     if (!branch) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -31,12 +32,12 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireSuperadmin();
     if ("error" in auth) return auth.error;
 
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
     const { name, address, price } = body as { name?: string; address?: string; price?: string | number };
 
@@ -45,13 +46,18 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
+    const data: {
+      name?: string;
+      address?: string;
+      price?: Prisma.Decimal | number | string;
+    } = {};
+    if (name !== undefined) data.name = name;
+    if (address !== undefined) data.address = address;
+    if (price !== undefined) data.price = price as Prisma.Decimal | number | string;
+
     const updated = await prisma.branch.update({
       where: { id },
-      data: {
-        name: name ?? existing.name,
-        address: address ?? existing.address,
-        price: (price as any) ?? existing.price,
-      },
+      data,
     });
 
     await prisma.adminLog.create({
@@ -72,12 +78,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireSuperadmin();
     if ("error" in auth) return auth.error;
 
-    const { id } = params;
+    const { id } = await context.params;
 
     const existing = await prisma.branch.findUnique({
       where: { id },
