@@ -8,7 +8,6 @@ import Image from "next/image";
 import { 
   Home, 
   Shield,
-  BarChart3,
   LogIn
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -203,16 +202,7 @@ export default function Navigation() {
                 <div className="hidden sm:block">
                 Branches
                 </div>
-              </Link>
-              <Link
-                href="/graph"
-                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
-              >
-                <BarChart3 className="w-4 h-4 sm:mr-2" />
-                <div className="hidden sm:block">
-                Reports
-                </div>
-              </Link>
+              </Link> 
             </>
             }
             {session.user.role === "customer" && 

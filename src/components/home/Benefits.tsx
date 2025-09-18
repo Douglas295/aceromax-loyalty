@@ -110,7 +110,7 @@ export default function Benefits() {
         </p>
       </div>
 
-      <div className="mt-12 flex flex-col lg:flex-row flex-wrap justify-center gap-8">
+      <div className="flex flex-col lg:flex-row flex-wrap justify-center gap-8">
         {benefitsData.map((benefit, idx) => (
           <BenefitCard key={idx} benefit={benefit} />
         ))}

@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <SessionProvider>
         <Toaster /> 
-        <div className="main-container bg-gray-50 flex flex-col relative overflow-hidden mx-auto w-full min-h-screen">
+        <div className="main-container bg-gray-50 flex flex-col relative mx-auto w-full min-h-screen">
           <Navigation />
           <div className="w-full relative flex flex-col">
             {children}

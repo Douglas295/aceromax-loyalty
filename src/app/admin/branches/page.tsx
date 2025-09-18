@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Edit, Trash } from 'lucide-react';
 
 interface Branch {
   id: string;
@@ -303,13 +304,13 @@ function BranchRow({
           </div>
         ) : (
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setEdit(true)}>Edit</Button>
+            <Button variant="outline" onClick={() => setEdit(true)}><Edit /></Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
               onClick={onDelete}
               disabled={deleting}
             >
-              {deleting ? "Deleting..." : "Delete"}
+              {deleting ? <>Deleting...</> : <Trash />}
             </Button>
           </div>
         )}
