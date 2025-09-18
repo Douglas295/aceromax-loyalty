@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     }
 
     // Only admin and superadmin can create customers
-    if (session.user.role !== "admin" && session.user.role !== "superadmin") {
+    if (session.user.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -39,19 +39,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User with this email already exists" }, { status: 400 });
     }
 
-    // Determine branch ID
-    let branchId: string;
-    if (session.user.role === "superadmin") {
-      // Superadmin can specify branch, but for now we'll use the first branch
-      // In a real app, you might want to add branch selection
-      const firstBranch = await prisma.branch.findFirst();
-      if (!firstBranch) {
-        return NextResponse.json({ error: "No branches available" }, { status: 400 });
-      }
-      branchId = firstBranch.id;
-    } else {
-      // Admin can only create customers for their own branch
-      branchId = session.user.branchId!;
+    const adminUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { branchId: true, branch: true },
+    });
+
+    if (!adminUser?.branchId) {
+      return NextResponse.json({ error: "Admin does not have a branch assigned" }, { status: 400 });
     }
 
     // Hash password
@@ -66,7 +60,7 @@ export async function POST(req: Request) {
         phone: phone || null,
         businessType,
         role: "customer",
-        branchId,
+        branchId: adminUser.branchId,
       },
       include: {
         branch: true,

@@ -66,7 +66,6 @@ export const authOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as "customer" | "admin" | "superadmin";
-        session.user.branchId = token.branchId as string;
       }
       return session;
     },
