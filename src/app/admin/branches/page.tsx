@@ -25,7 +25,8 @@ interface Branch {
 
 interface BranchStats {
   totalBranches: number;
-  totalUsers: number;
+  totalCustomers: number;
+  totalAdmins: number;
   averagePrice: number;
   newestBranch: string;
 }
@@ -67,7 +68,17 @@ export default function BranchesPage() {
       
       // Calculate stats
       const totalBranches = data.length;
-      const totalUsers = data.reduce((sum: number, branch: any) => sum + (branch.users?.length || 0), 0);
+
+      const totalCustomers = data.reduce((sum: number, branch: any) => {
+        const customersInBranch = branch.users?.filter((user: any) => user.role === 'customer').length || 0;
+        return sum + customersInBranch;
+      }, 0);
+
+      const totalAdmins = data.reduce((sum: number, branch: any) => {
+        const adminsInBranch = branch.users?.filter((user: any) => user.role === 'admin' || user.role === 'superadmin').length || 0;
+        return sum + adminsInBranch;
+      }, 0); 
+
       const averagePrice = data.length > 0 
         ? data.reduce((sum: number, branch: any) => sum + Number(branch.price), 0) / data.length 
         : 0;
@@ -77,7 +88,8 @@ export default function BranchesPage() {
 
       setStats({
         totalBranches,
-        totalUsers,
+        totalCustomers,
+        totalAdmins,
         averagePrice,
         newestBranch
       });
@@ -127,7 +139,7 @@ export default function BranchesPage() {
                 <Building className="w-8 h-8 text-blue-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Total Branches</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalBranches}</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalBranches} (admins:{stats.totalAdmins} )</p>
                 </div>
               </div>
             </div>
@@ -136,8 +148,8 @@ export default function BranchesPage() {
               <div className="flex items-center">
                 <Users className="w-8 h-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+                  <p className="text-sm font-medium text-gray-600">Clients/Admins</p>
+                  <p className="text-2xl font-bold text-gray-900">Clients: {stats.totalCustomers}</p>
                 </div>
               </div>
             </div>
@@ -195,7 +207,7 @@ export default function BranchesPage() {
         </div>
 
         {/* Branches Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        {/* <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {filteredBranches.length === 0 ? (
             <div className="text-center py-12">
               <Building className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -272,7 +284,7 @@ export default function BranchesPage() {
               </table>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Branch Details Cards */}
         {filteredBranches.length > 0 && (

@@ -18,6 +18,9 @@ export async function GET() {
 
     const branches = await prisma.branch.findMany({
       orderBy: { createdAt: "desc" },
+      include: {
+        users: true,
+      },
     });
 
     return NextResponse.json(branches);

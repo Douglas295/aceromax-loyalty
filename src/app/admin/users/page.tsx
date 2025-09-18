@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Eye,
   Search,
+  Users,
   Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -251,6 +252,16 @@ export default function UsersPage() {
                 <Download className="w-4 h-4 mr-2" />
                 Export CSV
               </Button>
+              
+              {session?.user.role === "superadmin" && (
+                <Button
+                  onClick={() => router.push("/admin/users-crud")}
+                  className="bg-sky-600 hover:bg-sky-700 text-white"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Manage Users
+                </Button>
+              )}
             </div>
           </div>
         </div>

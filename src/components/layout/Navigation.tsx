@@ -206,7 +206,7 @@ export default function Navigation() {
                 </div>
               </Link> 
               <Link
-                href="/admin/users-crud"
+                href="/admin/users"
                 className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
               >
                 <Users className="w-4 h-4 sm:mr-2" />
