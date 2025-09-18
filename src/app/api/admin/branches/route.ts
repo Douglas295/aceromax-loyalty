@@ -12,14 +12,31 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (session.user.role !== "superadmin") {
+    if (session.user.role !== "admin" && session.user.role !== "superadmin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const branches = await prisma.branch.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        users: true,
+        users: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true
+          }
+        },
+        pointsTransactions: {
+          select: {
+            id: true,
+            type: true,
+            points: true,
+            status: true,
+            createdAt: true
+          }
+        }
       },
     });
 
