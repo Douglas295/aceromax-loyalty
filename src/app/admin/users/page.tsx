@@ -211,7 +211,7 @@ export default function UsersPage() {
 
         {/* Controls */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div className="flex flex-row gap-4 items-center justify-between">
             <div className="flex-1 max-w-md">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -223,9 +223,19 @@ export default function UsersPage() {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
-            </div>
-            
-            <div className="flex gap-2">
+            </div> 
+            {session?.user.role === "superadmin" && (
+                <Button
+                  onClick={() => router.push("/admin/users-crud")}
+                  className="bg-sky-600 hover:bg-sky-700 text-white"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Manage Users
+                </Button>
+              )}
+          </div>
+
+          <div className="flex flex-row gap-4 items-center justify-start mt-4">
               <select
                 value={`${sortBy}-${sortOrder}`}
                 onChange={(e) => {
@@ -237,32 +247,20 @@ export default function UsersPage() {
               >
                 <option value="name-desc">Name (A-Z)</option>
                 <option value="name-asc">Name (Z-A)</option>
-                <option value="balance-desc">Balance (High to Low)</option>
-                <option value="balance-asc">Balance (Low to High)</option>
+                <option value="balance-desc">Balance (High-Low)</option>
+                <option value="balance-asc">Balance (Low-High)</option>
                 <option value="transactions-desc">Most Transactions</option>
                 <option value="transactions-asc">Least Transactions</option>
                 <option value="lastActivity-desc">Recent Activity</option>
                 <option value="lastActivity-asc">Oldest Activity</option>
               </select>
-              
               <Button
                 onClick={exportToCSV}
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Export CSV
-              </Button>
-              
-              {session?.user.role === "superadmin" && (
-                <Button
-                  onClick={() => router.push("/admin/users-crud")}
-                  className="bg-sky-600 hover:bg-sky-700 text-white"
-                >
-                  <Users className="w-4 h-4 mr-2" />
-                  Manage Users
-                </Button>
-              )}
-            </div>
+            </Button>
           </div>
         </div>
 

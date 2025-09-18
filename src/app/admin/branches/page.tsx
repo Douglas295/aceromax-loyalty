@@ -15,7 +15,6 @@ import {
   TrendingUp,
   Search,
   Coins,
-  Eye,
   Grid3X3,
   Table
 } from "lucide-react";
@@ -66,7 +65,6 @@ interface BranchWithStats extends Branch {
 export default function BranchesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [branches, setBranches] = useState<Branch[]>([]);
   const [branchesWithStats, setBranchesWithStats] = useState<BranchWithStats[]>([]);
   const [stats, setStats] = useState<BranchStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,7 +82,6 @@ export default function BranchesPage() {
       const res = await fetch("/api/admin/branches");
       if (!res.ok) throw new Error("Failed to fetch branches");
       const data = await res.json();
-      setBranches(data);
   
       // Calculate stats for each branch
       const branchesWithStatsData: BranchWithStats[] = data.map((branch: Branch) => {
@@ -275,46 +272,44 @@ export default function BranchesPage() {
                </div>
              </div>
              
-             <div className="flex items-center gap-4">
-               {/* View Toggle */}
-               <div className="flex items-center gap-2">
-                 <span className="text-sm text-gray-600">View:</span>
-                 <div className="flex bg-gray-100 rounded-lg p-1">
-                   <button
-                     onClick={() => setViewMode("table")}
-                     className={`flex items-center gap-2 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                       viewMode === "table"
-                         ? "bg-white text-gray-900 shadow-sm"
-                         : "text-gray-600 hover:text-gray-900"
-                     }`}
-                   >
-                     <Table className="w-4 h-4" />
-                     Table
-                   </button>
-                   <button
-                     onClick={() => setViewMode("cards")}
-                     className={`flex items-center gap-2 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                       viewMode === "cards"
-                         ? "bg-white text-gray-900 shadow-sm"
-                         : "text-gray-600 hover:text-gray-900"
-                     }`}
-                   >
-                     <Grid3X3 className="w-4 h-4" />
-                     Cards
-                   </button>
-                 </div>
-               </div>
-               
-               {session?.user.role === "superadmin" && (
-                 <Button
-                   onClick={() => router.push("/admin/branches-crud")}
-                   className="bg-sky-600 hover:bg-sky-700 text-white"
-                 >
-                   <Building className="w-4 h-4 mr-2" />
-                   Manage Branches
-                 </Button>
-               )}
-             </div>
+            {/* View Toggle */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">View:</span>
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode("table")}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    viewMode === "table"
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  <Table className="w-4 h-4" />
+                  Table
+                </button>
+                <button
+                  onClick={() => setViewMode("cards")}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    viewMode === "cards"
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                  Cards
+                </button>
+              </div>
+            </div>
+
+             {session?.user.role === "superadmin" && (
+                <Button
+                  onClick={() => router.push("/admin/branches-crud")}
+                  className="bg-sky-600 hover:bg-sky-700 text-white"
+                >
+                  <Building className="w-4 h-4 mr-2" />
+                  Manage Branches
+                </Button>
+              )}
            </div>
          </div>
 
