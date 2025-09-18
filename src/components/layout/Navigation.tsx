@@ -8,6 +8,8 @@ import Image from "next/image";
 import { 
   Home, 
   Shield,
+  Users,
+  Building,
   LogIn
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -198,7 +200,7 @@ export default function Navigation() {
                 href="/admin/branches"
                 className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
               >
-                <Shield className="w-4 h-4 sm:mr-2" />
+                <Building className="w-4 h-4 sm:mr-2" />
                 <div className="hidden sm:block">
                 Branches
                 </div>
@@ -207,7 +209,7 @@ export default function Navigation() {
                 href="/admin/users-crud"
                 className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
               >
-                <Shield className="w-4 h-4 sm:mr-2" />
+                <Users className="w-4 h-4 sm:mr-2" />
                 <div className="hidden sm:block">
                 Users
                 </div>
