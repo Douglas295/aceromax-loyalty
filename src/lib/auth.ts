@@ -7,6 +7,7 @@ type CustomUser = {
   id: string;
   email: string;
   role: "customer" | "admin" | "superadmin";
+  branchId?: string;
 };
 
 export const authOptions = {
@@ -26,6 +27,9 @@ export const authOptions = {
         const { email, password } = credentials;
         const user = await prisma.user.findUnique({
           where: { email },
+          include: {
+            branch: true
+          }
         });
 
         if (!user) {
@@ -36,30 +40,33 @@ export const authOptions = {
           throw new Error("Invalid password");
         }
 
-        // Return user info including role
+        // Return user info including role and branch
         return {
           id: user.id.toString(),
           name: user.name,
           email: user.email,
-          role: user.role, // <-- Add role here
+          role: user.role,
+          branchId: user.branchId,
         };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // Add id and role to token when user logs in
+      // Add id, role, and branchId to token when user logs in
       if (user) {
         const customUser = user as CustomUser;
         token.id = customUser.id;
         token.role = customUser.role;
+        token.branchId = customUser.branchId;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as "customer" | "admin" | "superadmin"; // <-- Add role here
+        session.user.role = token.role as "customer" | "admin" | "superadmin";
+        session.user.branchId = token.branchId as string;
       }
       return session;
     },

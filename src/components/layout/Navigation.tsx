@@ -184,6 +184,7 @@ export default function Navigation() {
           {/* Navigation Links */}
           <div className="flex items-center">
             {session.user.role === "admin" && 
+              <>
                 <Link
                   href="/admin"
                   className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
@@ -193,6 +194,16 @@ export default function Navigation() {
                   Admin Panel
                   </div>
                 </Link>
+                <Link
+                  href="/admin/users"
+                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+                >
+                  <Users className="w-4 h-4 sm:mr-2" />
+                  <div className="hidden sm:block">
+                  Customers
+                  </div>
+                </Link> 
+              </>
             }
             {session.user.role === "superadmin" && 
               <>
