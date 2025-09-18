@@ -158,13 +158,24 @@ export default function AdminDashboard() {
               <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
               <p className="text-gray-600">Manage loyalty program and user activities</p>
             </div>
-            <Button
-              onClick={() => router.push("/admin/users")}
-              className="bg-sky-600 hover:bg-sky-700 text-white"
-            >
-              <Users className="w-4 h-4 mr-2" />
-              View Users
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => router.push("/admin/users")}
+                className="bg-sky-600 hover:bg-sky-700 text-white"
+              >
+                <Users className="w-4 h-4 mr-2" />
+                View Users
+              </Button>
+              {session.user.role === "superadmin" && (
+                <Button
+                  onClick={() => router.push("/admin/users-crud")}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Manage Users
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 

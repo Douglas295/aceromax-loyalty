@@ -19,7 +19,7 @@ export default async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// ✅ Only match the 3 routes that might need auth handling
+// ✅ Only match the routes that might need auth handling
 export const config = {
-  matcher: ["/admin", "/admin/users", "/admin/branches", "/login", "/register"],
+  matcher: ["/admin", "/admin/users", "/admin/users-crud", "/admin/branches", "/login", "/register"],
 };
