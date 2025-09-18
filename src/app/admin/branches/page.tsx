@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+
 import toast from "react-hot-toast";
 import {
   Building,
@@ -15,12 +17,18 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+interface User {
+  id: string;
+  role: "customer" | "admin" | "superadmin";
+}
+
 interface Branch {
   id: string;
   name: string;
   address: string;
   price: string | number;
   createdAt: string;
+  users?: User[]; // ✅ Add this line
 }
 
 interface BranchStats {
@@ -44,48 +52,34 @@ export default function BranchesPage() {
     [session]
   );
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
-    if (status === "authenticated" && !isAdmin) {
-      router.push("/dashboard");
-      return;
-    }
-    if (status === "authenticated") {
-      fetchBranches();
-    }
-  }, [status, isAdmin, router]);
-
-  async function fetchBranches() {
+  const fetchBranches = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetch("/api/admin/branches");
       if (!res.ok) throw new Error("Failed to fetch branches");
       const data = await res.json();
       setBranches(data);
-      
-      // Calculate stats
+  
       const totalBranches = data.length;
-
-      const totalCustomers = data.reduce((sum: number, branch: any) => {
-        const customersInBranch = branch.users?.filter((user: any) => user.role === 'customer').length || 0;
+  
+      const totalCustomers = data.reduce((sum: number, branch: Branch) => {
+        const customersInBranch = branch.users?.filter((user) => user.role === 'customer').length || 0;
         return sum + customersInBranch;
       }, 0);
-
-      const totalAdmins = data.reduce((sum: number, branch: any) => {
-        const adminsInBranch = branch.users?.filter((user: any) => user.role === 'admin' || user.role === 'superadmin').length || 0;
+  
+      const totalAdmins = data.reduce((sum: number, branch: Branch) => {
+        const adminsInBranch = branch.users?.filter((user) => user.role === 'admin' || user.role === 'superadmin').length || 0;
         return sum + adminsInBranch;
       }, 0); 
-
+  
       const averagePrice = data.length > 0 
-        ? data.reduce((sum: number, branch: any) => sum + Number(branch.price), 0) / data.length 
+        ? data.reduce((sum: number, branch: Branch) => sum + Number(branch.price), 0) / data.length 
         : 0;
+  
       const newestBranch = data.length > 0 
-        ? data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0].name
+        ? [...data].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0].name
         : "N/A";
-
+  
       setStats({
         totalBranches,
         totalCustomers,
@@ -102,9 +96,23 @@ export default function BranchesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  const filteredBranches = branches.filter(branch =>
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
+    if (status === "authenticated" && !isAdmin) {
+      router.push("/dashboard");
+      return;
+    }
+    if (status === "authenticated") {
+      fetchBranches();
+    }
+  }, [status, isAdmin, router, fetchBranches]);
+
+  const filteredBranches = branches.filter((branch : Branch) =>
     branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     branch.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -284,7 +292,7 @@ export default function BranchesPage() {
               </table>
             </div>
           )}
-        </div> */}
+        </div>  */}
 
         {/* Branch Details Cards */}
         {filteredBranches.length > 0 && (

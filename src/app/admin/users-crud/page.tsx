@@ -16,7 +16,6 @@ import {
   User,
   Mail,
   Phone,
-  Building,
   Shield,
   MapPin
 } from "lucide-react";

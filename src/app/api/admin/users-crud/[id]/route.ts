@@ -100,7 +100,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     }
 
     // Prepare update data
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
     if (phone !== undefined) updateData.phone = phone;
@@ -164,7 +164,7 @@ export async function DELETE(_req: Request, context: { params: Promise<{ id: str
     const auth = await requireSuperadmin();
     if ("error" in auth) return auth.error;
 
-    const { id } = await context.params;
+    const { id } = await context.params as { id: string };
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
