@@ -3,6 +3,18 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import { compare } from "bcrypt";
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: "customer" | "admin" | "superadmin";
+      branchId: string;
+    };
+  }
+}
+
 type CustomUser = {
   id: string;
   email: string;
@@ -66,6 +78,7 @@ export const authOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as "customer" | "admin" | "superadmin";
+        session.user.branchId = token.branchId as string;
       }
       return session;
     },

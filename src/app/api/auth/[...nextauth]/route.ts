@@ -13,6 +13,7 @@ declare module "next-auth" {
       name: string;
       email: string;
       role: "customer" | "admin" | "superadmin";  // Add role here
+      branchId: string;
     };
   }
 }

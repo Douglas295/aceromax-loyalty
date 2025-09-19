@@ -156,7 +156,7 @@ export default function Navigation() {
   return (
     <nav className="bg-white shadow-sm border-b fixed shadow-md z-100 px-4 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
          <div className="flex items-center">
           <Link href="/" className="flex items-center">
@@ -187,21 +187,17 @@ export default function Navigation() {
               <>
                 <Link
                   href="/admin"
-                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+                  className="flex items-center px-2 sm:mx-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
                 >
-                  <Shield className="w-4 h-4 sm:mr-2" />
-                  <div className="hidden sm:block">
-                  Admin Panel
-                  </div>
+                  <Shield className="w-5 h-5 sm:mr-2" />
+                  Dashboard
                 </Link>
                 <Link
                   href="/admin/users"
-                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+                  className="flex items-center py-2 sm:mx-3 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
                 >
-                  <Users className="w-4 h-4 sm:mr-2" />
-                  <div className="hidden sm:block">
-                  Customers
-                  </div>
+                  <Users className="w-5 h-5 sm:mr-2" />
+                  Users
                 </Link> 
               </>
             }
@@ -209,21 +205,17 @@ export default function Navigation() {
               <>
               <Link
                 href="/admin/branches"
-                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+                className="flex items-center px-2 sm:mx-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
               >
-                <Building className="w-4 h-4 sm:mr-2" />
-                <div className="hidden sm:block">
+                <Building className="w-5 h-5 sm:mr-2" />
                 Branches
-                </div>
               </Link> 
               <Link
                 href="/admin/users"
-                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
+                className="flex items-center py-2 sm:mx-3 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
               >
-                <Users className="w-4 h-4 sm:mr-2" />
-                <div className="hidden sm:block">
+                <Users className="w-5 h-5 sm:mr-2" />
                 Users
-                </div>
               </Link> 
             </>
             }
@@ -232,13 +224,12 @@ export default function Navigation() {
                 href="/dashboard"
                 className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50"
               >
-                <Home className="w-4 h-4 sm:mr-2" />
-                <div className="hidden sm:block">
+                <Home className="w-5 h-5 sm:mr-2" />
                 Dashboard
-                </div>
               </Link>
             }
           </div>
+
           <UserMenu session={session} handleSignOut={handleSignOut} />
         </div>
       </div>
