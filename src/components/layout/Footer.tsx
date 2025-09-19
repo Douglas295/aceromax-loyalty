@@ -85,7 +85,7 @@ export default function Footer() {
             </Link>
           </div>
           <span className="flex text-[16px] font-normal text-[#9ca3af] text-left py-2">
-            Connecting clients with financial insights worldwide.
+            Connecting clients with aceromax insights worldwide.
           </span>
           <div className="flex py-2">
             <Link

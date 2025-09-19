@@ -155,7 +155,7 @@ export default function SignUp() {
     formData.agreeToTerms;
 
   return (
-    <div className="w-full min-h-[650px] h-[calc(90vh-75px)] max-w-md flex flex-col items-center justify-center">
+    <div className="w-full min-h-[650px] h-[calc(90vh-100px)] max-w-md flex flex-col items-center justify-center pt-24">
       <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl text-gray-800 text-center mb-4">
         Create Your Account
       </h1>

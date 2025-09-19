@@ -72,7 +72,7 @@ export default function Navigation() {
                       e.preventDefault();
                       const el = document.getElementById("how-it-works");
                       if (el) {
-                        const y = el.getBoundingClientRect().top + window.pageYOffset - 75;
+                        const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
                         window.scrollTo({ top: y, behavior: "smooth" });
                       }
                   }}
@@ -86,26 +86,12 @@ export default function Navigation() {
                       e.preventDefault();
                       const el = document.getElementById("benefits");
                       if (el) {
-                        const y = el.getBoundingClientRect().top + window.pageYOffset - 75;
+                        const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
                         window.scrollTo({ top: y, behavior: "smooth" });
                       }
                   }}
                 >
                   Benefits
-                </a>
-                <a
-                  href="#users-say"
-                  className="text-base font-normal leading-6 text-gray-700 hover:text-sky-700 transition-colors"
-                  onClick={e => {
-                      e.preventDefault();
-                      const el = document.getElementById("users-say");
-                      if (el) {
-                        const y = el.getBoundingClientRect().top + window.pageYOffset - 75;
-                        window.scrollTo({ top: y, behavior: "smooth" });
-                      }
-                  }}
-                >
-                  Waitlist
                 </a>
               </div>
               <Button
@@ -156,7 +142,7 @@ export default function Navigation() {
   return (
     <nav className="bg-white shadow-sm border-b fixed shadow-md z-100 px-4 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-18">
           {/* Logo */}
          <div className="flex items-center">
           <Link href="/" className="flex items-center">
@@ -229,6 +215,41 @@ export default function Navigation() {
               </Link>
             }
           </div>
+
+          {pathname == "/" && 
+          <div className="flex items-center space-x-4">
+              <div className="sm:flex items-center space-x-4 hidden">
+                <a
+                  href="#how-it-works"
+                  className="text-base font-normal leading-6 text-gray-700 hover:text-sky-700 transition-colors"
+                  onClick={e => {
+                      e.preventDefault();
+                      const el = document.getElementById("how-it-works");
+                      if (el) {
+                        const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                        window.scrollTo({ top: y, behavior: "smooth" });
+                      }
+                  }}
+                >
+                  How It Works
+                </a>
+                <a
+                  href="#benefits"
+                  className="text-base font-normal leading-6 text-gray-700 hover:text-sky-700 transition-colors"
+                  onClick={e => {
+                      e.preventDefault();
+                      const el = document.getElementById("benefits");
+                      if (el) {
+                        const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                        window.scrollTo({ top: y, behavior: "smooth" });
+                      }
+                  }}
+                >
+                  Benefits
+                </a>
+              </div>
+            </div>
+          }
 
           <UserMenu session={session} handleSignOut={handleSignOut} />
         </div>

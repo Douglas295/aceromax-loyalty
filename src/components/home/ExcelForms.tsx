@@ -20,8 +20,16 @@ export default function JoinNowCTA() {
           <UserPlus /> Register Now
         </Link>
         <Link
-          href="/#how-it-works"
+          href="#how-it-works"
           className="flex items-center justify-center gap-2 border-2 border-white px-6 py-3 rounded-lg font-semibold"
+          onClick={e => {
+              e.preventDefault();
+              const el = document.getElementById("how-it-works");
+              if (el) {
+                const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                window.scrollTo({ top: y, behavior: "smooth" });
+              }
+          }}
         >
           <Gift /> Learn More
         </Link>
