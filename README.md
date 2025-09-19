@@ -64,34 +64,21 @@ Before running this project, ensure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/aceromax-loyalty.git
+git clone https://github.com/codarkle/aceromax-loyalty.git
 cd aceromax-loyalty
 ```
 
 ### 2. Install Dependencies
 ```bash
 npm install
-# or
-yarn install
 ```
 
 ### 3. Environment Configuration
-Create a `.env.local` file in the root directory:
-
+Create a `.env` file in the root directory:
 ```env
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/aceromax_loyalty"
-
-# NextAuth.js
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-here"
-
-# Optional: Email configuration for notifications
-EMAIL_SERVER_HOST="smtp.gmail.com"
-EMAIL_SERVER_PORT=587
-EMAIL_SERVER_USER="your-email@gmail.com"
-EMAIL_SERVER_PASSWORD="your-app-password"
-EMAIL_FROM="noreply@aceromax.com"
+DATABASE_URL="your-production-database-url"
+NEXTAUTH_SECRET="your-production-secret"
+JWT_SECERT="your-production-auth-secret"
 ```
 
 ### 4. Database Setup
@@ -109,8 +96,6 @@ npx prisma db seed
 ### 5. Start Development Server
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 The application will be available at `http://localhost:3000`
@@ -143,49 +128,9 @@ aceromax-loyalty/
 ├── package.json
 ├── tailwind.config.js
 ├── tsconfig.json
+├── License
 └── README.md
 ```
-
-## 🗄️ Database Schema
-
-### Core Models
-
-#### User
-- **id**: Unique identifier (UUID)
-- **name**: User's full name
-- **email**: Unique email address
-- **password**: Hashed password
-- **phone**: Optional phone number
-- **role**: customer | admin | superadmin
-- **businessType**: Type of business
-- **branchId**: Associated branch
-- **createdAt/updatedAt**: Timestamps
-
-#### Branch
-- **id**: Unique identifier (UUID)
-- **name**: Branch name
-- **address**: Physical address
-- **price**: Point value in MXN
-- **createdAt**: Creation timestamp
-
-#### PointsTransaction
-- **id**: Unique identifier (UUID)
-- **userId**: Associated user
-- **branchId**: Associated branch
-- **folio**: Receipt/invoice number
-- **description**: Transaction description
-- **type**: earn | redeem
-- **points**: Points amount
-- **amount**: Monetary amount
-- **status**: pending | confirmed | redeemed | rejected
-- **createdAt/updatedAt**: Timestamps
-
-#### AdminLog
-- **id**: Unique identifier (UUID)
-- **adminId**: Admin who performed action
-- **action**: Action description
-- **details**: JSON details
-- **createdAt**: Timestamp
 
 ## 🔐 Authentication & Authorization
 
@@ -201,115 +146,21 @@ aceromax-loyalty/
 - Protected API routes
 - CSRF protection
 
-## 📱 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/[...nextauth]` - NextAuth.js handlers
-
-### Points Management
-- `GET /api/points/balance` - Get user's point balance
-- `GET /api/points/history` - Get transaction history
-- `POST /api/points/purchases` - Submit receipt for points
-- `POST /api/points/redeem` - Request point redemption
-
-### Admin Operations
-- `GET /api/admin/users` - List all users
-- `POST /api/admin/users` - Create new user
-- `PUT /api/admin/users/[id]` - Update user
-- `GET /api/admin/branches` - List branches
-- `POST /api/admin/branches` - Create branch
-- `GET /api/admin/dashboard` - Admin dashboard data
-- `POST /api/admin/points/approve` - Approve pending transactions
-
-### User Management
-- `GET /api/user/branch` - Get user's branch information
-- `GET /api/profile` - Get user profile
-
-## 🎨 UI Components
-
-### Custom Components
-- **Button** - Styled button with variants
-- **Checkbox** - Accessible checkbox component
-- **MonthPicker** - Date selection component
-- **Navigation** - Main navigation bar
-- **UserMenu** - User dropdown menu
-- **SignIn/SignUp** - Authentication forms
-
-### Layout Components
-- **Footer** - Site footer with links
-- **Navigation** - Main site navigation
-- **UserMenu** - User account menu
-
 ## 🚀 Deployment
+
+### Railway (Recommended)
+1. Deploy with PostgreSQL database
+2. DATABASE_URL setup for .env
 
 ### Vercel (Recommended)
 1. Connect your GitHub repository to Vercel
 2. Set environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
 
-### Other Platforms
-- **Netlify**: Configure build settings for Next.js
-- **Railway**: Deploy with PostgreSQL database
-- **DigitalOcean**: Use App Platform with managed database
-
-### Environment Variables for Production
-```env
-DATABASE_URL="your-production-database-url"
-NEXTAUTH_URL="https://your-domain.com"
-NEXTAUTH_SECRET="your-production-secret"
-```
-
-## 🧪 Development
-
-### Available Scripts
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run prisma:generate  # Generate Prisma client
-npm run prisma:push      # Push schema to database
-npm run prisma:migrate   # Run database migrations
-```
-
-### Database Management
-```bash
-# Open Prisma Studio
-npx prisma studio
-
-# Reset database
-npx prisma migrate reset
-
-# Deploy migrations to production
-npx prisma migrate deploy
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Use meaningful commit messages
-- Write tests for new features
-- Update documentation as needed
-- Follow the existing code style
-
+ 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the GitHub repository
-- Contact the development team
-- Check the documentation wiki
 
 ## 🔮 Roadmap
 
