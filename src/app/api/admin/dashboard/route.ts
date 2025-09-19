@@ -12,9 +12,22 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (session.user.role !== "admin") {
+    if (!["admin", "superadmin"].includes(session.user.role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    // Get admin's branch information
+    const adminUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { branchId: true, role: true },
+    });
+
+    if (!adminUser) {
+      return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+    }
+
+    // For superadmin, show all data; for admin, filter by their branch
+    const branchFilter = adminUser.role === "superadmin" ? {} : { branchId: adminUser.branchId };
 
     // Get dashboard statistics
     const [
@@ -26,16 +39,19 @@ export async function GET() {
       totalPointsRedeemed,
       totalRedemptionsAmount
     ] = await Promise.all([
-      // Total users
+      // Total users (filtered by branch for admin)
       prisma.user.count({
         where: {
           role: 'customer',
+          ...branchFilter,
         },
       }),
 
-      // Users created in last 30 days
+      // Users with activity in last 30 days (filtered by branch for admin)
       prisma.user.count({
         where: {
+          role: 'customer',
+          ...branchFilter,
           pointsTransactions: {
             some: {
               createdAt: {
@@ -46,48 +62,53 @@ export async function GET() {
         },
       }),
 
-      // Total confirmed "earn" transactions (i.e., purchases)
+      // Total confirmed "earn" transactions (filtered by branch for admin)
       prisma.pointsTransaction.count({
         where: {
           type: PointsTransactionType.earn,
           status: PointsTransactionStatus.confirmed,
+          ...branchFilter,
         },
       }),
 
-      // Pending "earn" transactions (awaiting admin review)
+      // Pending transactions (filtered by branch for admin)
       prisma.pointsTransaction.count({
         where: {
           status: PointsTransactionStatus.pending,
+          ...branchFilter,
         },
       }),
 
-      // Total points earned (sum of confirmed earn)
+      // Total points earned (filtered by branch for admin)
       prisma.pointsTransaction.aggregate({
         where: {
           type: PointsTransactionType.earn,
           status: PointsTransactionStatus.confirmed,
+          ...branchFilter,
         },
         _sum: {
           points: true,
         },
       }),
 
-      // Total points redeemed (sum of confirmed redeem)
+      // Total points redeemed (filtered by branch for admin)
       prisma.pointsTransaction.aggregate({
         where: {
           type: PointsTransactionType.redeem,
           status: PointsTransactionStatus.confirmed,
+          ...branchFilter,
         },
         _sum: {
           points: true,
         },
       }),
 
-      // Total redemption amount (value) in MXN
+      // Total redemption amount (filtered by branch for admin)
       prisma.pointsTransaction.aggregate({
         where: {
           type: PointsTransactionType.redeem,
           status: PointsTransactionStatus.confirmed,
+          ...branchFilter,
         },
         _sum: {
           amount: true,
@@ -98,29 +119,24 @@ export async function GET() {
     
     const totalPointsEarnedValue = totalPointsEarned._sum.points || 0;
     const totalPointsRedeemedValue = totalPointsRedeemed._sum.points || 0;
-    // const currentLiabilities = (totalPointsEarnedValue - totalPointsRedeemedValue) * 0.5;
     const totalRedemptions = Number(totalRedemptionsAmount._sum.amount || 0);
 
-    // Fetch the user's branchId
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id, },
-      select: { branchId: true, },
-    });
-
-    // Fetch branch prices
-    const branchPrices = await prisma.branch.findMany({
-      select: {
-        id: true,
-        price: true,
-      },
-    });
-
-    let price = 0.5;
-    if (user && branchPrices.length > 0) {
-      const userBranch = branchPrices.find(branch => branch.id === user.branchId);
-      if (userBranch) {
-         price = Number(userBranch.price);
+    // Get branch price for liability calculation
+    let price = 0.5; // Default price
+    if (adminUser.role === "admin") {
+      const branch = await prisma.branch.findUnique({
+        where: { id: adminUser.branchId },
+        select: { price: true },
+      });
+      if (branch) {
+        price = Number(branch.price);
       }
+    } else {
+      // For superadmin, use average price or default
+      const avgPrice = await prisma.branch.aggregate({
+        _avg: { price: true },
+      });
+      price = Number(avgPrice._avg.price || 0.5);
     }
 
     const currentLiabilities = (totalPointsEarnedValue - totalPointsRedeemedValue) * price || 0

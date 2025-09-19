@@ -11,14 +11,28 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (session.user.role !== "admin" && session.user.role !== "superadmin") {
+    if (!["admin", "superadmin"].includes(session.user.role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Get users with their transaction summary
+    // Get admin's branch information
+    const adminUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { branchId: true, role: true },
+    });
+
+    if (!adminUser) {
+      return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+    }
+
+    // For superadmin, show all data; for admin, filter by their branch
+    const branchFilter = adminUser.role === "superadmin" ? {} : { branchId: adminUser.branchId };
+
+    // Get users with their transaction summary (filtered by branch for admin)
     const users = await prisma.user.findMany({
       where: {
-        role: "customer"
+        role: "customer",
+        ...branchFilter,
       },
       include: {
         branch: {

@@ -42,6 +42,10 @@ interface PendingTransaction {
     email: string;
     phone?: string;
   };
+  branch?: {
+    name: string;
+    address: string;
+  };
 }
 
 export default function AdminDashboard() {
@@ -55,6 +59,7 @@ export default function AdminDashboard() {
   const [processingTransaction, setProcessingTransaction] = useState<string | null>(
     null
   );
+  const [branchInfo, setBranchInfo] = useState<{ name: string; address: string } | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -70,6 +75,7 @@ export default function AdminDashboard() {
 
       fetchStats();
       fetchPendingTransactions();
+      fetchBranchInfo();
     }
   }, [status, router, session]);
 
@@ -96,6 +102,18 @@ export default function AdminDashboard() {
       console.error("Error fetching pending transactions:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBranchInfo = async () => {
+    try {
+      const response = await fetch("/api/user/branch");
+      if (response.ok) {
+        const data = await response.json();
+        setBranchInfo({ name: data.name, address: data.address });
+      }
+    } catch (error) {
+      console.error("Error fetching branch info:", error);
     }
   };
 
@@ -157,15 +175,23 @@ export default function AdminDashboard() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
               <p className="text-gray-600">Manage loyalty program and user activities</p>
+              {session.user.role === "admin" && branchInfo && (
+                <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <span className="font-medium">Branch:</span> {branchInfo.name}
+                  </p>
+                  <p className="text-xs text-blue-600">{branchInfo.address}</p>
+                </div>
+              )}
+              {session.user.role === "superadmin" && (
+                <div className="mt-2 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                  <p className="text-sm text-purple-800">
+                    <span className="font-medium">Super Admin:</span> Access to all branches
+                  </p>
+                </div>
+              )}
             </div>
             <div className="flex gap-3">
-              <Button
-                onClick={() => router.push("/admin/users")}
-                className="bg-sky-600 hover:bg-sky-700 text-white"
-              >
-                <Users className="w-4 h-4 mr-2" />
-                View Users
-              </Button>
               {session.user.role === "superadmin" && (
                 <Button
                   onClick={() => router.push("/admin/users-crud")}
@@ -270,6 +296,11 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             Pending Transactions
+            {session.user.role === "admin" && branchInfo && (
+              <span className="text-sm font-normal text-gray-600 ml-2">
+                - {branchInfo.name}
+              </span>
+            )}
           </h2>
           {pendingTransactions.length === 0 ? (
             <p className="text-gray-600 text-center py-8">
@@ -321,6 +352,11 @@ export default function AdminDashboard() {
                             Submitted:{" "}
                             {new Date(transaction.createdAt).toLocaleDateString()}
                           </p>
+                          {session.user.role === "superadmin" && transaction.branch && (
+                            <p className="text-sm text-gray-600">
+                              Branch: {transaction.branch.name}
+                            </p>
+                          )}
                         </div>
                         
                       </div>

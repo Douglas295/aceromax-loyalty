@@ -22,13 +22,38 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    // Fetch the transaction
+    // Get admin's branch information
+    const adminUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { branchId: true, role: true },
+    });
+
+    if (!adminUser) {
+      return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+    }
+
+    // Fetch the transaction with branch information
     const transaction = await prisma.pointsTransaction.findUnique({
       where: { id: transactionId },
+      include: {
+        branch: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     if (!transaction) {
       return NextResponse.json({ error: "Transaction not found" }, { status: 404 });
+    }
+
+    // For admin users, ensure they can only approve transactions from their branch
+    if (adminUser.role === "admin" && transaction.branchId !== adminUser.branchId) {
+      return NextResponse.json({ 
+        error: "You can only approve transactions from your branch" 
+      }, { status: 403 });
     }
 
     if (transaction.status !== PointsTransactionStatus.pending) {

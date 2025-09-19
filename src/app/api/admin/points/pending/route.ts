@@ -16,10 +16,24 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Fetch pending transactions (i.e., purchases needing review)
+    // Get admin's branch information
+    const adminUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { branchId: true, role: true },
+    });
+
+    if (!adminUser) {
+      return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+    }
+
+    // For superadmin, show all data; for admin, filter by their branch
+    const branchFilter = adminUser.role === "superadmin" ? {} : { branchId: adminUser.branchId };
+
+    // Fetch pending transactions (filtered by branch for admin)
     const pendingPurchases = await prisma.pointsTransaction.findMany({
       where: {
         status: PointsTransactionStatus.pending,
+        ...branchFilter,
       },
       include: {
         user: {
@@ -28,6 +42,12 @@ export async function GET() {
             name: true,
             email: true,
             phone: true,
+          },
+        },
+        branch: {
+          select: {
+            name: true,
+            address: true,
           },
         },
       },
