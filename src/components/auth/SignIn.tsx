@@ -50,38 +50,37 @@ export default function LogIn()
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      setLoading(true);
-      await signIn("credentials", {
-        redirect: false,
-        email: formData.email,
-        password: formData.password,
-      }).then((res) => {
-        if (!res) {
-          toast.error("Unknown error occurred.");
-        }
-        else if (res.error) {
-          toast.error(res.error);
-        } else {
-          setLoading(false);
-          toast.success("You logged in successfully.");
-        }
-      });
-      if(! loading){
-        router.push("/");
-      }
-      setLoading(false);
-    } else {
-      // Show first error as toast
-      if (errors.email) {
-        toast.error(errors.email);
-      } else if (errors.password) {
-        toast.error(errors.password);
-      } else {
-        toast.error("Please fill in all required fields.");
-      }
+    if (!validateForm()) {
+      // show validation errors
+      if (errors.email) toast.error(errors.email);
+      else if (errors.password) toast.error(errors.password);
+      else toast.error("Please fill in all required fields.");
+      return;
     }
+
+    setLoading(true);
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    setLoading(false);
+
+    if (!res) {
+      toast.error("Unknown error occurred.");
+      return;
+    }
+
+    if (res.error) {
+      toast.error(res.error);
+      return;
+    }
+
+    toast.success("You logged in successfully.");
+    router.push("/");
   };
+
 
   return (
       <div className="w-full min-h-[550px] h-[calc(80vh-100px)] max-w-md flex flex-col items-center justify-center">
@@ -146,12 +145,12 @@ export default function LogIn()
             )}
           </div>
           
-          <Link
+          {/* <Link
               href="/reset-password"
               className="font-normal text-sky-600 text-base underline p-0 h-auto text-right"
             >
               Forgot Password?
-            </Link>
+            </Link> */}
           {/* Submit Button */}
           <Button
             type="submit"

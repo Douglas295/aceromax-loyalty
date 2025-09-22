@@ -23,6 +23,10 @@ type CustomUser = {
 };
 
 export const authOptions = {
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24,
+  },
   providers: [
     CredentialsProvider({
       name: "credentials",
